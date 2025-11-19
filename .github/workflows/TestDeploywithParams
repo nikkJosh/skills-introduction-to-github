@@ -1,0 +1,63 @@
+name: TestDeploywithParams
+run-name: ${{ inputs.UPGRADE_RUNTIME }} build for ${{ inputs.LOCATION }}-${{ inputs.SERVER }} on ${{ github.ref_name }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      PROJECT:
+        description: 'Project Name'
+        required: true
+        type: string
+      LOCATION:
+        description: 'Deploy Location'
+        required: true
+        type: string
+      SERVER:
+        description: 'Deploy Server'
+        required: true
+        type: string
+        default: va1
+      DEPLOY_SERVICE:
+        description: 'Deploy Service'
+        required: true
+        type: choice
+        default: RUNTIME-AZURE
+        options:
+        - RUNTIME-AZURE
+        - SIDEKICK-AZURE
+        - EDGEAPI-AZURE
+        - ALL-AZURE
+      DEPLOY_METRICS:
+        description: 'Deploy Metrics'
+        required: true
+        type: choice
+        default: VECTOR
+        options:
+          - VECTOR
+          - NONE
+      UPGRADE_RUNTIME:
+        description: 'Upgrade or Reset'
+        type: choice
+        default: RESET
+        options:
+        - UPGRADE
+        - RESET
+      CLOUD_ENV:
+        description: 'Deploy Environment'
+        required: true
+        type: choice
+        default: PROD_AZURE
+        options:
+        - PROD_AZURE
+        - STAGE_AZURE
+        - DEV_AZURE
+      RUNNER:
+        description: 'Name of runner'
+        required: false
+        type: string
+jobs:
+  test-job:
+    runs-on: ${{ github.event.inputs.RUNNER }}
+    steps:
+      - name: Dump inputs
+        run: echo "${{ toJson(inputs) }}"
